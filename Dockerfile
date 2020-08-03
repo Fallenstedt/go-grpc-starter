@@ -21,8 +21,6 @@ COPY . .
 RUN make proto
 RUN make build
 
-
-
 FROM alpine
 COPY --from=builder /app/server /app/
 
