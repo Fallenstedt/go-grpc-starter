@@ -24,7 +24,7 @@ RUN make build
 FROM alpine
 COPY --from=builder /app/server /app/
 
-EXPOSE 8080
+EXPOSE 50051
 
 # # Set the binary as the entrypoint of the container
 ENTRYPOINT ["/app/server"]

@@ -2,7 +2,7 @@
 VERSION         :=      $(shell cat ./VERSION)
 IMAGE_NAME      :=      fallenstedt/test-grpc
 
-all: install
+all: install proto
 
 
 install:
