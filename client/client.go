@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"io"
 
 	greet_proto "example.com/greet/greetpb/greet.proto"
 
@@ -22,10 +23,38 @@ func main() {
 
 	c := greet_proto.NewGreetServiceClient(cc)
 
-	doUnary(c)
+	doUnaryGreet(c)
+	doServerStream(c)
 }
 
-func doUnary(c greet_proto.GreetServiceClient) {
+func doServerStream(c greet_proto.GreetServiceClient) {
+	resStream, err := c.GreetManyTimes(context.Background(), &greet_proto.GreetManyTimesRequest{
+		Greeting: &greet_proto.Greeting {
+			FirstName: "Alex",
+			LastName: "Fallenstedt",
+		},
+	})
+	if err != nil {
+		log.Fatalf("Failed while calling GreetManyTimes RPC %v", err)
+	}
+	
+	for {
+		msg, err := resStream.Recv()
+		// Server ended stream
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			log.Fatalf("Error while reading stream %v", err)
+		}
+		log.Printf("Response %v", msg)
+	}
+	
+
+}
+
+func doUnaryGreet(c greet_proto.GreetServiceClient) {
 	resp, err := c.Greet(context.Background(), &greet_proto.GreetRequest{
 		Greeting: &greet_proto.Greeting{
 			FirstName: "Alex",

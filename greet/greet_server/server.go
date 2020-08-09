@@ -1,6 +1,7 @@
 package main
 
 import (
+	"time"
 	"context"
 	"fmt"
 	"log"
@@ -20,6 +21,20 @@ func (*server) Greet(ctx context.Context, req *greet_proto.GreetRequest) (*greet
 		Result: result,
 	}
 	return res, nil
+}
+
+func (*server) GreetManyTimes(req *greet_proto.GreetManyTimesRequest, stream greet_proto.GreetService_GreetManyTimesServer) (error) {
+	log.Printf("GreetManyTimes function was invoked with %v", req)
+	firstName := req.GetGreeting().GetFirstName();
+	for i := 0; i < 10; i++ {
+		res := &greet_proto.GreetManyTimesResponse {
+			Result: "Hello " + firstName,
+		}
+		stream.Send(res)
+		time.Sleep(1000 * time.Millisecond)
+	}
+	log.Printf("GreetManyTimes function completed")
+	return nil
 }
 
 func main() {
