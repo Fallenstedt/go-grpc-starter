@@ -3,11 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"io"
+	"log"
 
-	greet_proto "example.com/greet/greetpb/greet.proto"
-
+	"example.com/greet/gen/greet/proto"
 	"google.golang.org/grpc"
 )
 
@@ -21,15 +20,15 @@ func main() {
 
 	defer cc.Close()
 
-	c := greet_proto.NewGreetServiceClient(cc)
+	c := greet.NewGreetServiceClient(cc)
 
 	doUnaryGreet(c)
 	doServerStream(c)
 }
 
-func doServerStream(c greet_proto.GreetServiceClient) {
-	resStream, err := c.GreetManyTimes(context.Background(), &greet_proto.GreetManyTimesRequest{
-		Greeting: &greet_proto.Greeting {
+func doServerStream(c greet.GreetServiceClient) {
+	resStream, err := c.GreetManyTimes(context.Background(), &greet.GreetManyTimesRequest{
+		Greeting: &greet.Greeting {
 			FirstName: "Alex",
 			LastName: "Fallenstedt",
 		},
@@ -54,9 +53,9 @@ func doServerStream(c greet_proto.GreetServiceClient) {
 
 }
 
-func doUnaryGreet(c greet_proto.GreetServiceClient) {
-	resp, err := c.Greet(context.Background(), &greet_proto.GreetRequest{
-		Greeting: &greet_proto.Greeting{
+func doUnaryGreet(c greet.GreetServiceClient) {
+	resp, err := c.Greet(context.Background(), &greet.GreetRequest{
+		Greeting: &greet.Greeting{
 			FirstName: "Alex",
 			LastName:  "Fallenstedt",
 		},

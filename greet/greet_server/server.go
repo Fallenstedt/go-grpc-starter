@@ -1,33 +1,35 @@
 package main
 
 import (
-	"time"
 	"context"
 	"fmt"
 	"log"
 	"net"
+	"time"
 
-	greet_proto "example.com/greet/greetpb/greet.proto"
+	"example.com/greet/gen/greet/proto"
 	"google.golang.org/grpc"
 )
 
-type server struct{}
+type greetServer struct{
+	greet.GreetServiceServer
+}
 
-func (*server) Greet(ctx context.Context, req *greet_proto.GreetRequest) (*greet_proto.GreetResponse, error) {
+func (*greetServer) Greet(ctx context.Context, req *greet.GreetRequest) (*greet.GreetResponse, error) {
 	log.Printf("Greet function was invoked with %v", req)
 	firstName := req.GetGreeting().GetFirstName()
 	result := "Hello " + firstName
-	res := &greet_proto.GreetResponse{
+	res := &greet.GreetResponse{
 		Result: result,
 	}
 	return res, nil
 }
 
-func (*server) GreetManyTimes(req *greet_proto.GreetManyTimesRequest, stream greet_proto.GreetService_GreetManyTimesServer) (error) {
+func (*greetServer) GreetManyTimes(req *greet.GreetManyTimesRequest, stream greet.GreetService_GreetManyTimesServer) error {
 	log.Printf("GreetManyTimes function was invoked with %v", req)
 	firstName := req.GetGreeting().GetFirstName();
 	for i := 0; i < 10; i++ {
-		res := &greet_proto.GreetManyTimesResponse {
+		res := &greet.GreetManyTimesResponse {
 			Result: "Hello " + firstName,
 		}
 		stream.Send(res)
@@ -47,7 +49,7 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	greet_proto.RegisterGreetServiceServer(s, &server{})
+	greet.RegisterGreetServiceServer(s, &greetServer{})
 
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v", err)

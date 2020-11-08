@@ -2,7 +2,7 @@
 VERSION         :=      $(shell cat ./VERSION)
 IMAGE_NAME      :=      fallenstedt/test-grpc
 
-all: install proto
+all: install gen
 
 
 install:
@@ -10,10 +10,11 @@ install:
 	go mod download && \
 	echo "Completed" 
 
-proto: 
-	echo "Building proto definitions..." && \
-	protoc --go_out=plugins=grpc:. greet/greetpb/*.proto && \
-	echo "Completed"
+
+proto:
+	protoc --go_out=gen --go_opt=paths=source_relative \
+    --go-grpc_out==plugins=grpc:gen --go-grpc_opt=paths=source_relative \
+    greet/proto/*.proto
 
 build:
 	go build greet/greet_server/server.go
