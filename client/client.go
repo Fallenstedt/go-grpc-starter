@@ -23,13 +23,13 @@ func main() {
 
 	c := greet.NewGreetServiceClient(cc)
 
-	//time.Sleep(100 * time.Millisecond)
-	//doUnaryGreet(c)
-	//time.Sleep(100 * time.Millisecond)
-	//doServerStream(c)
-	//time.Sleep(100 * time.Millisecond)
-	//doClientStream(c)
-	//time.Sleep(100 * time.Millisecond)
+	time.Sleep(100 * time.Millisecond)
+	doUnaryGreet(c)
+	time.Sleep(100 * time.Millisecond)
+	doServerStream(c)
+	time.Sleep(100 * time.Millisecond)
+	doClientStream(c)
+	time.Sleep(100 * time.Millisecond)
 	doBiStreaming(c)
 }
 
